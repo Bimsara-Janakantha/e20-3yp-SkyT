@@ -1,5 +1,5 @@
 import { cleanEnv } from "envalid";
-import { port, str } from "envalid/dist/validators";
+import { bool, port, str } from "envalid/dist/validators";
 
 export default cleanEnv(process.env, {
   PORT: port(),
@@ -16,4 +16,11 @@ export default cleanEnv(process.env, {
   JWT_SECRET: str(),
   ACCUWEATHER_API_KEY: str(),
   ACCUWEATHER_BASE_URL: str(),
+  DB_USE_SSH_TUNNEL: bool(),
+  DST_DB_HOST: str(),
+  DST_DB_PORT: port(),
+  SSH_HOST: str(),
+  SSH_PORT: port(),
+  SSH_USER: str(),
+  SSH_KEY: str(),
 });

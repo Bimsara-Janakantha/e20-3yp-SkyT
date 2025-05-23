@@ -1,7 +1,7 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
-import pool from "../database/sqldb";
 import createHttpError from "http-errors";
 import argon2 from "argon2";
+import { getDbPool } from "../database/tunnelSqlDB";
 
 class AuthModel {
   // Store reset token in the database (optimistic concurrency control)
@@ -10,6 +10,9 @@ class AuthModel {
     token: string,
     expiration: number
   ) {
+    // Create Pool
+    const pool = await getDbPool();
+
     // Begin a transaction
     const connection = await pool.getConnection();
     try {
@@ -46,6 +49,7 @@ class AuthModel {
 
   // Find user by reset token
   static async findByUser(userId: string | number) {
+    const pool = await getDbPool();
     const [rows] = await pool.query<RowDataPacket[]>(
       "SELECT * FROM AUTH WHERE userId = ?",
       [userId]
@@ -55,6 +59,7 @@ class AuthModel {
 
   // Update the password in the database
   static async updatePassword(userId: number, password: string) {
+    const pool = await getDbPool();
     // Begin a transaction
     const connection = await pool.getConnection();
     try {

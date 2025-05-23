@@ -1,11 +1,12 @@
 import createHttpError from "http-errors";
-import pool from "../database/sqldb";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { NotificationModel } from "./notifications";
+import { getDbPool } from "../database/tunnelSqlDB";
 
 class EstateModel {
   // Get owned estates as a summary list
   static async getEstateSummay(userId: number) {
+    const pool = await getDbPool();
     const [rows] = await pool.query<RowDataPacket[]>(
       `SELECT e.estateId, e.estate 
        FROM ESTATES e 
@@ -21,6 +22,7 @@ class EstateModel {
 
   // Get owned estates as a detailed list
   static async getEstates(employeeId: number) {
+    const pool = await getDbPool();
     const [rows] = await pool.query<RowDataPacket[]>(
       `SELECT e.estateId, e.estate, e.address, e.image
        FROM ESTATES e 
@@ -36,6 +38,7 @@ class EstateModel {
 
   // Fetch employee details working in manager's estates
   static async getEmployees(managerId: number) {
+    const pool = await getDbPool();
     const [rows] = await pool.query<RowDataPacket[]>(
       `SELECT 
         u.userId AS id,
@@ -60,6 +63,7 @@ class EstateModel {
 
   // Get office location of the estate
   static async getOfficeById(estateId: number, userId: number) {
+    const pool = await getDbPool();
     const [rows] = await pool.query<RowDataPacket[]>(
       `SELECT e.estate AS name, e.lat, e.lng
        FROM ESTATES e
@@ -86,6 +90,7 @@ class EstateModel {
     userId: number;
     estates: number[];
   }) {
+    const pool = await getDbPool();
     const connection = await pool.getConnection();
 
     try {

@@ -2,6 +2,7 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 import pool from "../database/sqldb";
 import { getRelativeTime } from "../util/formatTimestamp";
 import createHttpError from "http-errors";
+import { getDbPool } from "../database/tunnelSqlDB";
 
 interface messageProps {
   msgId: number;
@@ -43,6 +44,7 @@ function findSender(type: string) {
 
 export class NotificationModel {
   static async createOnce({ userId, title, message, type }: NewMessageProps) {
+    const pool = await getDbPool();
     try {
       const query = `
         INSERT INTO NOTIFICATIONS (userId, title, message, type)

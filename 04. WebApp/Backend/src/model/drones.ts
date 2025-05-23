@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
-import pool from "../database/sqldb";
 import { RowDataPacket } from "mysql2";
+import { getDbPool } from "../database/tunnelSqlDB";
 
 interface DroneProps {
   monAct: number;
@@ -20,6 +20,8 @@ interface DroneStatusProps {
 
 class DroneModel {
   static async getDroneSummary(estateId: number): Promise<DroneProps> {
+    const pool = await getDbPool();
+
     const query = `
           SELECT
             SUM(CASE WHEN type = 'Monitoring' AND status = 'Active' THEN 1 ELSE 0 END) AS monAct,
@@ -36,6 +38,7 @@ class DroneModel {
   }
 
   static async getDroneStatusByEstate(estateId: number, userId: number) {
+    const pool = await getDbPool();
     const conn = await pool.getConnection();
     try {
       // Verify access

@@ -1,8 +1,8 @@
 import createHttpError from "http-errors";
-import pool from "../database/sqldb";
 import { RowDataPacket } from "mysql2";
 import { formatTimestamp, getColomboTime } from "../util/formatTimestamp";
 import { DateTime } from "luxon";
+import { getDbPool } from "../database/tunnelSqlDB";
 
 interface DataProps {
   Temperature: number;
@@ -19,6 +19,7 @@ interface DataProps {
 class LotModel {
   // Gets Lot summary
   static async getLotSummaryByEstate(estateId: number) {
+    const pool = await getDbPool();
     const query = `
           SELECT 
             L.lotId,
@@ -67,6 +68,7 @@ class LotModel {
   }
 
   static async getLotsByEstate(estateId: number) {
+    const pool = await getDbPool();
     const query = `
           SELECT 
             lotId,
@@ -90,6 +92,7 @@ class LotModel {
   }
 
   static async isLotAccessibleByUser(userId: number, lotId: number) {
+    const pool = await getDbPool();
     const query = `
           SELECT L.* 
           FROM LOTS L
@@ -103,6 +106,7 @@ class LotModel {
   }
 
   static async getLotDataById(lotId: number, lowerPH: number, upperPH: number) {
+    const pool = await getDbPool();
     const query = `
       WITH LatestReadings AS (
         SELECT sr.*
@@ -139,6 +143,7 @@ class LotModel {
   }
 
   static async getLatestLotImage(lotId: number) {
+    const pool = await getDbPool();
     const query = `
       SELECT I.url, I.uploadedAt
       FROM NODE_IMAGES I
@@ -165,6 +170,7 @@ class LotModel {
     userId: number,
     reqType: string
   ) {
+    const pool = await getDbPool();
     let startDate: DateTime;
 
     switch (reqType) {
@@ -223,6 +229,7 @@ class LotModel {
     userId: number,
     reqType: string
   ) {
+    const pool = await getDbPool();
     let startDate: DateTime;
 
     switch (reqType) {
@@ -281,6 +288,7 @@ class LotModel {
   }
 
   static async getLotCenterAndNodes(lotId: number) {
+    const pool = await getDbPool();
     const query = `
       SELECT 
         L.lot AS name,
@@ -312,6 +320,7 @@ class LotModel {
   }
 
   static async getNodesByLotId(lotId: number) {
+    const pool = await getDbPool();
     const query = `
       SELECT 
         N.nodeId,
@@ -340,6 +349,7 @@ class LotModel {
   }
 
   static async getGalleryImages(lotId: number, lastId: number | null) {
+    const pool = await getDbPool();
     // Step 1: Get 3 most recent distinct dates
     const dateQuery = `
       SELECT DISTINCT DATE(I.uploadedAt) AS date

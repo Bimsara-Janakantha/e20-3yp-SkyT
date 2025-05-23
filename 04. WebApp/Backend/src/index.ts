@@ -1,26 +1,24 @@
 import app from "./app";
+import { getDbPool } from "./database/tunnelSqlDB";
 import env from "./util/validateEnv";
-import sqlDB from "./database/sqldb";
 
 const port = env.PORT;
 
 const startServer = async () => {
   let connection;
-
   try {
-    // Test the DB connection
-    connection = await sqlDB.getConnection();
+    const pool = await getDbPool();
+    connection = await pool.getConnection();
     console.log("Connected to MySQL database");
 
-    // Start the server
     app.listen(port, () => {
-      console.log(`Server running on port: ${port}`);
+      console.log(`Server running on http://localhost:${port}`);
     });
-  } catch (error) {
-    console.error("Failed to connect to the database:", error);
-    process.exit(1); // Exit the app if DB connection fails
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
   } finally {
-    if (connection) connection.release(); // Always release the connection
+    if (connection) connection.release();
   }
 };
 

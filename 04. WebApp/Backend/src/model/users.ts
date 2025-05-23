@@ -1,8 +1,8 @@
-import pool from "../database/sqldb";
 import createHttpError from "http-errors";
 import argon2 from "argon2";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { NotificationModel } from "./notifications";
+import { getDbPool } from "../database/tunnelSqlDB";
 
 // Define the User interface for type checking
 export interface NewUser {
@@ -27,6 +27,7 @@ const WELCOME_MESSAGE =
 class UserModel {
   // Create a new user
   static async create(user: NewUser) {
+    const pool = await getDbPool();
     const connection = await pool.getConnection();
 
     try {
@@ -86,6 +87,7 @@ class UserModel {
 
   // Get a user by email
   static async findByEmail(email: string) {
+    const pool = await getDbPool();
     const result = await pool.query<RowDataPacket[]>(
       "SELECT * FROM USERS WHERE email = ?",
       [email]
@@ -95,6 +97,7 @@ class UserModel {
 
   // Get a user by userId
   static async findById(userId: number | string) {
+    const pool = await getDbPool();
     const result = await pool.query<RowDataPacket[]>(
       "SELECT * FROM USERS WHERE userId = ?",
       [userId]
@@ -104,6 +107,7 @@ class UserModel {
 
   // Get all system users for the developer
   static async getUsers() {
+    const pool = await getDbPool();
     const [rows] = await pool.query<RowDataPacket[]>(
       `SELECT 
         u.userId AS id,
@@ -125,6 +129,7 @@ class UserModel {
 
   // Delete an assistant
   static async deleteAssistant(userId: number, managerId: number) {
+    const pool = await getDbPool();
     const conn = await pool.getConnection();
 
     try {
@@ -171,6 +176,7 @@ class UserModel {
 
   // Update user details
   static async update(user: UpdateUser) {
+    const pool = await getDbPool();
     // Extract the props
     const { userId, profilePic, password, ...updates } = user;
 

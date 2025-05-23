@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
-import pool from "../database/sqldb";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { getDbPool } from "../database/tunnelSqlDB";
 
 interface TaskProps {
   task: string;
@@ -14,6 +14,7 @@ interface TaskProps {
 
 class TaskModel {
   static async getTasksByEstate(estateId: number) {
+    const pool = await getDbPool();
     const query = `
         SELECT taskId, task, dueDate, dueTime, tag, status, lots
         FROM TASKS
@@ -27,6 +28,7 @@ class TaskModel {
   }
 
   static async getTasksByLot(lotId: number) {
+    const pool = await getDbPool();
     const query = `
         SELECT taskId, task, dueDate, dueTime, tag, status
         FROM TASKS
@@ -48,6 +50,7 @@ class TaskModel {
     estateId,
     userId,
   }: TaskProps) {
+    const pool = await getDbPool();
     // Start a transaction to protect everything
     const conn = await pool.getConnection();
 
@@ -168,6 +171,7 @@ class TaskModel {
   }
 
   static async removeTask(userId: number, taskId: number) {
+    const pool = await getDbPool();
     const conn = await pool.getConnection();
 
     try {
