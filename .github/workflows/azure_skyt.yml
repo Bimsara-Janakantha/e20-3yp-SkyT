@@ -34,7 +34,7 @@ jobs:
           npm run test --if-present
 
       - name: Zip artifact for deployment
-        run: zip -r backend.zip . next.config.js package.json dist
+        run: zip backend.zip ./* -r
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
