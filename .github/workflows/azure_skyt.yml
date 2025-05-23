@@ -34,13 +34,13 @@ jobs:
           npm run test --if-present
 
       - name: Zip artifact for deployment
-        run: zip backend.zip ./* -r
+        run: zip release.zip ./* -r
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: backend.zip
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,19 +52,15 @@ jobs:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
 
-    defaults:
-      run:
-        working-directory: '04. WebApp/Backend
-
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: node-app
-          path: backend.zip 
+          path: release.zip
 
       - name: Unzip artifact for deployment
-        run: unzip backend.zip
+        run: unzip release.zip
       
       - name: Login to Azure
         uses: azure/login@v2
