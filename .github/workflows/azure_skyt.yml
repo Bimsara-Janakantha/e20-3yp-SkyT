@@ -35,6 +35,13 @@ jobs:
           name: backend-dist
           path: '04. WebApp/Backend'
 
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_ED0C114F492F4A4E91B71F80EEB2C8C3 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_302A7C2AF70F4EE7BBD459E567CA1C48 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_AB4A77EF724641A0ADECAB2405FA3D12 }}
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
