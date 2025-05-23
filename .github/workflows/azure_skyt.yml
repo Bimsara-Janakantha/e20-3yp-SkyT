@@ -75,5 +75,5 @@ jobs:
         with:
           app-name: 'skyT'
           slot-name: 'Production'
-          package: 'backend.zip'
+          package: .
           
