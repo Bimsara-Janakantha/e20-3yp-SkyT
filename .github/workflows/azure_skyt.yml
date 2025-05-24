@@ -2,7 +2,8 @@ name: Build and deploy Node.js app to Azure Web App - skyT
 
 on:
   push:
-    branches: [Azure]
+    branches: 
+      - Azure
     paths:
       - "04. Webapp/Backend/**"
 
