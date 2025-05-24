@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '22.x'
 
@@ -36,7 +36,7 @@ jobs:
       - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: backend-dist
+          name: dist
           path: '04. WebApp/Backend'
 
       - name: Login to Azure
@@ -52,6 +52,5 @@ jobs:
         with:
           app-name: skyT
           slot-name: production
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: '04. WebApp/Backend'
 
