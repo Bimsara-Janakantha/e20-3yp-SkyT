@@ -34,15 +34,9 @@ jobs:
     - name: Run tests (if any)
       run: npm run test --if-present
 
-    - name: Zip the build output
-      run: |
-        cd ..
-        zip -r backend.zip Backend/
-        ls -la
-
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/../backend.zip
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
