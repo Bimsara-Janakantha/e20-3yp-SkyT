@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: skyT_Backend
+  AZURE_WEBAPP_NAME: skyt
   AZURE_WEBAPP_PACKAGE_PATH: './04. WebApp/Backend'
   NODE_VERSION: '22.x'
 
