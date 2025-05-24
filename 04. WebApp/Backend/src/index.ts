@@ -1,24 +1,38 @@
 import app from "./app";
-import { getDbPool } from "./database/tunnelSqlDB";
+import { closeDbPool, getDbPool } from "./database/tunnelSqlDB";
 import env from "./util/validateEnv";
 
 const port = env.PORT;
 
 const startServer = async () => {
-  let connection;
   try {
     const pool = await getDbPool();
-    connection = await pool.getConnection();
+    await pool.getConnection();
     console.log("Connected to MySQL database");
 
     app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);
     });
+
+    // Register cleanup
+    process.on("SIGINT", gracefulShutdown);
+    process.on("SIGTERM", gracefulShutdown);
   } catch (err) {
     console.error("Failed to start server:", err);
+    await gracefulShutdown();
     process.exit(1);
-  } finally {
-    if (connection) connection.release();
+  }
+};
+
+const gracefulShutdown = async () => {
+  console.log("Shutting down server...");
+  try {
+    await closeDbPool(); // Closes DB + tunnel
+    console.log("Resources released.");
+    process.exit(0);
+  } catch (error) {
+    console.error("Error during shutdown:", error);
+    process.exit(1);
   }
 };
 
