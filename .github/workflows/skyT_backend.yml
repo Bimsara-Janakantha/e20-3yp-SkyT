@@ -1,0 +1,36 @@
+name: Build and deploy Node.js app to Azure Web App - skyT
+
+on:
+  push:
+    branches: 
+      - Azure
+    paths:
+      - "04. Webapp/Backend/**"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "04. Webapp/Backend"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "skyt"
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
