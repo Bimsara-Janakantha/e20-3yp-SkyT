@@ -1,3 +1,12 @@
+-- initial user
+INSERT INTO USERS (email, password, role, fName, lName) 
+VALUES ('0000sampleemail0000@gmail.com', 'hello', 'Developer', 'SkyT', 'WebAdmin');
+
+INSERT INTO USERS (email, password, role, fName, lName) 
+VALUES ('econductorinfo@gmail.com', 'hello', 'Owner', 'John', 'Doe');
+
+
+
 -- Dummy Estates
 INSERT INTO ESTATES (estate, address, managerId, lat, lng)
 VALUES 
