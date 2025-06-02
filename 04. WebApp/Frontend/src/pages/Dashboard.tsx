@@ -214,7 +214,7 @@ function DashboardArea({ search, setSearch }: DashboardAreaProps) {
             />
           )}
           <Stack direction={"row"} display={{ xs: "none", md: "flex" }}>
-            <Tooltip title={"Notifications"} sx={{ ml: 2 }}>
+            <Tooltip title={"Notifications"} sx={{ ml: 2, width: "55px" }}>
               <IconButton
                 onClick={() => {
                   navigator("/notifications");

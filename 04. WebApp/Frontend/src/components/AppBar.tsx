@@ -10,12 +10,13 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import MenuItem from "./MenuItem";
 import { NavLink } from "react-router-dom";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import logo from "../assets/login_asserts/Logotr.png";
 import IconMenu from "./IconMenu";
+import { useAuth } from "../context/AuthContext";
 
 // Width of the drawer
 const drawerWidth = 230;
@@ -26,11 +27,17 @@ interface ItemProps {
   path: string;
 }
 
-const msgCount = 10;
-
 export default function AppBar1({ menu }: { menu: ItemProps[] }) {
+  const { user } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
-  //const [msgCount, setMessageCount] = useState<number>(0);
+  const [msgCount, setMessageCount] = useState<number>(0);
+
+  useEffect(() => {
+    const tokenCount = user?.msgCount;
+    if (tokenCount) {
+      setMessageCount(tokenCount);
+    }
+  }, [user?.msgCount]);
 
   return (
     <AppBar position="sticky" color="default">
@@ -61,6 +68,7 @@ export default function AppBar1({ menu }: { menu: ItemProps[] }) {
               to={"/notifications"}
               badgeContent={msgCount}
               color="primary"
+              max={9}
             >
               <NotificationsIcon color="action" sx={{ fontSize: 30 }} />
             </Badge>

@@ -16,19 +16,19 @@ import { getData } from "../api/NodeBackend";
 import { AxiosError } from "axios";
 import { ToastAlert } from "../components/ToastAlert";
 import { useLoading } from "../context/LoadingContext";
+import { fetchImage } from "../api/ImageBackend";
 
 interface ImageCardProps {
   imageId: number;
   url: string;
   uploadedAt: string;
   node: string;
+  blobUrl?: string;
 }
 
 interface ErrorResponse {
   error: string;
 }
-
-const BASE_URL = import.meta.env.VITE_IMAGE_BACKEND;
 
 export default function Gallary() {
   const path = useLocation().pathname;
@@ -49,7 +49,20 @@ export default function Gallary() {
       if (serverResponse.status === 200) {
         const { message, imageList } = serverResponse.data;
         console.log(message);
-        setLatestImages(imageList);
+
+        // Map through images and fetch blob URLs
+        const imagesWithBlobUrls: ImageCardProps[] = await Promise.all(
+          imageList.map(async (image: ImageCardProps) => {
+            const blobUrl = await fetchImage(image.url);
+            return { ...image, blobUrl };
+          })
+        );
+
+        setLatestImages((prev) =>
+          lastId === -1
+            ? imagesWithBlobUrls
+            : [...(prev || []), ...imagesWithBlobUrls]
+        );
       } else {
         console.log(serverResponse.statusText);
         ToastAlert({
@@ -133,7 +146,7 @@ export default function Gallary() {
             <CardMedia
               component="img"
               height="170"
-              image={`${BASE_URL}/${image.url}`}
+              image={image.blobUrl || ""}
               alt={`image on ${image.uploadedAt}`}
             />
             <CardContent>

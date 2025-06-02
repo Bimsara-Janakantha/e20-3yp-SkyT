@@ -8,6 +8,8 @@ import {
 } from "@mui/material";
 import LandscapeRoundedIcon from "@mui/icons-material/LandscapeRounded";
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { fetchImage } from "../api/ImageBackend";
 
 interface GallaryCardProps {
   lastUpdate?: string | null;
@@ -20,8 +22,29 @@ export default function GallaryCard({
   img,
   path,
 }: GallaryCardProps) {
-  const BASE_URL = import.meta.env.VITE_IMAGE_BACKEND;
-  //console.log(`${BASE_URL}/${img}`);
+  const [secureImgUrl, setSecureImgUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let revoked = false;
+
+    const getImage = async () => {
+      if (img) {
+        const blobUrl = await fetchImage(img);
+        if (!revoked) setSecureImgUrl(blobUrl);
+      }
+    };
+
+    getImage();
+
+    return () => {
+      if (secureImgUrl) {
+        URL.revokeObjectURL(secureImgUrl);
+      }
+      revoked = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [img]);
+
   return (
     <Card
       elevation={3}
@@ -73,10 +96,10 @@ export default function GallaryCard({
       </Box>
 
       <CardActionArea href={path + "/gallary"}>
-        {img ? (
+        {secureImgUrl ? (
           <Box
             component={"img"}
-            src={`${BASE_URL}/${img}`}
+            src={secureImgUrl}
             alt="image"
             width={"100%"}
             height={"155px"}
