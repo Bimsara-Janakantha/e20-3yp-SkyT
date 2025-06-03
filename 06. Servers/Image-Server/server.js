@@ -1,11 +1,11 @@
+require('dotenv').config({ path: '/home/raspi/image-server/.env' });
+console.log('ENV LOADED:', process.env.DB_HOST, process.env.PORT);
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
-require('dotenv').config();
-
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const serverUrl = process.env.SERVER_URL;
@@ -34,53 +34,39 @@ async function getDBConnection() {
   });
 }
 
-// Authentication middleware
+// Authentication middleware with Access Denied HTML
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  
-  if (!authHeader) {
-    return res.status(401).json({ 
-      success: false, 
-      message: 'Authorization header required' 
-    });
-  }
 
-  // Support "Bearer <token>" format
+  const denyAccessPage = () => {
+  res.status(403).sendFile(path.join(__dirname, 'public/access-denied.html'));
+  };
+
+  if (!authHeader) return denyAccessPage();
+
   const parts = authHeader.split(' ');
-  if (parts.length !== 2 || parts[0] !== 'Bearer') {
-    return res.status(401).json({ 
-      success: false, 
-      message: 'Invalid authorization header format. Use "Bearer <token>"' 
-    });
-  }
+  if (parts.length !== 2 || parts[0] !== 'Bearer') return denyAccessPage();
 
   const token = parts[1];
   
   let connection;
   try {
-    // Query to validate the token
     connection = await getDBConnection();
+
     const [rows] = await connection.query(
       'SELECT * FROM API_KEYS WHERE api_key = ? AND status = ? AND (expires_at IS NULL OR expires_at > NOW())',
       [token, 'active']
     );
 
-    if (rows.length === 0) {
-      return res.status(403).json({ 
-        success: false, 
-        message: 'Invalid or expired API key' 
-      });
-    }
+    if (rows.length === 0) return denyAccessPage();
 
     const apiKeyRecord = rows[0];
-    
-    // Update last_used timestamp
+
     await connection.query(
       'UPDATE API_KEYS SET last_used = NOW() WHERE api_key = ?',
       [token]
     );
 
-    // Attach API key info to request object
     req.user = {
       apiKeyId: apiKeyRecord.id,
       apiKey: apiKeyRecord.api_key,
@@ -88,7 +74,7 @@ const authenticateToken = async (req, res, next) => {
       permissions: apiKeyRecord.permissions,
       createdBy: apiKeyRecord.created_by
     };
-    
+
     next();
   } catch (error) {
     console.error('Authentication error:', error);
@@ -482,12 +468,16 @@ app.post('/sensor-readings', authenticateToken, async (req, res) => {
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    database: 'direct connection',
-    timestamp: new Date(),
-  });
+app.get('/health', async (req, res) => {
+  try {
+    const connection = await getDBConnection();
+    await connection.execute('SELECT 1'); // Test DB connectivity
+    res.status(500).sendFile(path.join(__dirname, 'public/db-connected.html'));
+    await connection.end();
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(500).sendFile(path.join(__dirname, 'public/db-error.html'));
+  }
 });
 
 // Start the server
@@ -495,5 +485,3 @@ app.listen(PORT, () => {
   console.log(`Server running at ${serverUrl}`);
   console.log(`Upload endpoint at ${serverUrl}/upload`);
 });
-
-//Test webhook
