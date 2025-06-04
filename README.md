@@ -145,7 +145,7 @@ npm start
 ## Testing
 - Jest + Supertest for backend unit and integration tests
 - Manual API testing via Postman
-
+- Frontend E2E testing via cypress
 ---
 
 ## Project Structure
