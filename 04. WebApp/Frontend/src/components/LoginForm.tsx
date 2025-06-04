@@ -131,6 +131,7 @@ export function LoginFormMD({
               fullWidth
               label="Email address"
               value={email}
+              name="email"
               onChange={(e) => setEmail(e.target.value)}
               margin="normal"
               slotProps={{
@@ -148,6 +149,7 @@ export function LoginFormMD({
               fullWidth
               type={show ? "text" : "password"}
               label="Password"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               margin="normal"
