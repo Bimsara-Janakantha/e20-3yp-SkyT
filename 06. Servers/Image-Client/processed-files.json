@@ -1,2 +1,18 @@
 {
+  "files": {
+    "C:\\Users\\nishi\\OneDrive\\Documents\\GitHub\\e20-3yp-SkyT\\06. Servers\\Image-Client\\images-to-upload\\node_55_test_1.jpg": {
+      "uploadedAt": "2025-06-03T21:19:19.579Z",
+      "isDuplicate": true,
+      "originalFile": "C:\\Users\\nishi\\OneDrive\\Documents\\GitHub\\e20-3yp-SkyT\\06. Servers\\Image-Client\\images-to-upload\\node_55_test_1.jpg",
+      "serverPath": "uploads/1748978919380-139836032-node_55_test_1.jpg"
+    }
+  },
+  "hashes": {
+    "1c5362a6858f5f05377dec2ecdd74598": [
+      "C:\\Users\\nishi\\OneDrive\\Documents\\GitHub\\e20-3yp-SkyT\\06. Servers\\Image-Client\\images-to-upload\\node_55_test_1.jpg",
+      "C:\\Users\\nishi\\OneDrive\\Documents\\GitHub\\e20-3yp-SkyT\\06. Servers\\Image-Client\\images-to-upload\\node_55_test_1.jpg",
+      "C:\\Users\\nishi\\OneDrive\\Documents\\GitHub\\e20-3yp-SkyT\\06. Servers\\Image-Client\\images-to-upload\\node_55_test_1.jpg",
+      "C:\\Users\\nishi\\OneDrive\\Documents\\GitHub\\e20-3yp-SkyT\\06. Servers\\Image-Client\\images-to-upload\\node_55_test_1.jpg"
+    ]
+  }
 }

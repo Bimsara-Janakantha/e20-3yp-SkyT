@@ -377,6 +377,7 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
 
     res.json({
       status: 'success',
+      taskId: closestTask.taskId,
       droneId: droneId,
       lots: lotInfoList
     });
@@ -386,6 +387,41 @@ app.get('/task/:droneId', authenticateToken, async (req, res) => {
     res.status(500).json({ 
       status: 'error', 
       message: error.message 
+    });
+  } finally {
+    if (connection) await connection.end();
+  }
+});
+
+app.post('/task/:taskId/complete', authenticateToken, async (req, res) => {
+  let connection;
+  try {
+    const taskId = req.params.taskId;
+    connection = await getDBConnection();
+
+    // Check if the task exists
+    const [taskRows] = await connection.query('SELECT status FROM TASKS WHERE taskId = ?', [taskId]);
+
+    if (taskRows.length === 0) {
+      return res.status(404).json({
+        status: 'error',
+        message: `Task ID ${taskId} not found`
+      });
+    }
+
+    // Update task status to Completed
+    await connection.query('UPDATE TASKS SET status = ? WHERE taskId = ?', ['Completed', taskId]);
+
+    res.json({
+      status: 'success',
+      message: `Task ID ${taskId} marked as Completed`
+    });
+
+  } catch (error) {
+    console.error('Complete task error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: error.message
     });
   } finally {
     if (connection) await connection.end();

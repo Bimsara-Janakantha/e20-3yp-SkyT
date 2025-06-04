@@ -1,4 +1,5 @@
 const fs = require('fs');
+require('dotenv').config();
 const path = require('path');
 const axios = require('axios');
 const FormData = require('form-data');
@@ -134,15 +135,16 @@ async function uploadFile(filePath) {
     const formData = new FormData();
     formData.append('images', fs.createReadStream(filePath));
     const APIToken = process.env.API_TOKEN; // Ensure you have your token set in environment variables
+
     // Upload file
     console.log(`Uploading ${filename}...`);
     const response = await axios.post(serverUrl, formData, {
       headers: {
         ...formData.getHeaders(),
-        Authorization: `Bearer ${APIToken}`
+        authorization: `Bearer ${APIToken}`
       },
       params: {
-        nodeId: 4
+        nodeId: 55
       }
     });
     

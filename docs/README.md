@@ -63,22 +63,53 @@ Our architecture integrates hardware and cloud components:
 
 ## Hardware and Software Designs
 
-----
+---
+
 ### Software Design
+SkyT features a robust and scalable full-stack architecture with clearly separated concerns between the frontend, backend, and cloud integrations.
 
-- **Frontend:** React + TypeScript + Bootstrap, dynamic dashboard, role-based UI/UX.
-- **Backend:** Node.js + Express, TypeScript, REST API, MySQL2, JWT authentication, hosted on Vercel.
-- **Database:** MySQL.
-- **Cloud:** AWS for backend services, Cloudflare for frontend hosting.
+#### Frontend
+  - Built with React, TypeScript, and Vite for a fast, modular, and modern development experience.
+  - Uses Material UI (MUI) for a consistent and responsive user interface.
+  - Integrates React Router DOM for protected and nested route management.
+  - Includes Leaflet and Google Maps API for geospatial visualizations of estates and drone positions.
+  - Utilizes MUI X Charts for real-time data visualization of environmental metrics (NPK, humidity, temperature).
 
-_Recent improvements include:_
-- Enhanced authentication (including image-based auth and access denied pages)
-- Real-time dashboard data, notification system, and drone control hooks
-- Improved API structure and error handling
-- Task lifecycle management and advanced permissioning
-- Gallery for drone image uploads
+#### Backend
+  - Powered by Node.js + Express with TypeScript, following a modular REST API design.
+  - Implements MySQL2 with connection pooling for efficient database access.
+  - Features JWT-based authentication and role-based access control.
+  - Deployed on AWS EC2, ensuring rapid and scalable serverless function support.
+  - Handles secure file uploads, task concurrency, and drone control through integrated service hooks.
+    
+#### Database
+  - MySQL with relational integrity and indexing for optimized queries.
+  - Structured tables for estates, lots, nodes, sensor readings, images, users, and tasks.
+  - Supports JSON field optimization for mapping task-lot relationships.
 
-----
+#### Cloud & DevOps
+  - Cloudflare hosts the frontend for fast global delivery.
+  - GitHub Actions automate build and deployment workflows (CI/CD).
+  - Nodemailer provides email verification and notification capabilities.
+  - External APIs such as AccuWeather enhance weather-based decisions.
+
+#### Advanced Features
+  - Real-time dashboard with periodic backend validation for token and session.
+  - Custom middleware for authentication, error handling, and role-based permissions.
+  - Image compression and secure storage with naming conventions tied to user IDs.
+  - Time-series data filtering by node, date range, and value thresholds.
+  - Notification system for alerts (e.g., sensor out-of-range, new image uploads).
+  - Fully documented REST API endpoints and test cases using Jest + Supertest.
+  - Authentication-based image accessing method.
+
+#### Screenshots
+
+<img src="https://github.com/user-attachments/assets/4b7a7567-52d0-4834-b182-4f1defc56411" alt="Dashboard" width="450"/>
+<img src="https://github.com/user-attachments/assets/2addff3d-caaa-41d4-ac60-fdc4804f07b2" alt="People Page" width="450"/>
+<img src="https://github.com/user-attachments/assets/78e08f5b-6887-4f1e-8d94-a0172cbb16f3" alt="Profile" width="450"/>
+<img src="https://github.com/user-attachments/assets/3bd32c29-45ac-4bcd-abe5-0e2f0706b932" alt="Task Manager" width="450"/>
+
+ ----
   
 ### Hardware Design
 
@@ -100,6 +131,10 @@ _Recent improvements include:_
 - Backend: Automated tests using Jest + Supertest
 - Manual API testing with Postman
 - Hardware: Sensor and communication integration tested in field conditions
+
+<img src="https://github.com/user-attachments/assets/1a62003a-b972-4a10-aa7f-3a2a3003bb8f" alt="Jest" width="135"/>
+<img src="https://github.com/user-attachments/assets/9de3b784-95ee-4063-8185-54ade2a8ac45" alt="Jest" width="150"/>
+<img src="https://github.com/user-attachments/assets/b347d55a-e4e0-4b70-a82c-7799dc762a00" alt="Jest" width="150"/>
 
 ---
 
